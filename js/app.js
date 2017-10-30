@@ -16,13 +16,18 @@ $("#title").change((e) => {
 });
 
 //Displays correct t shirt colors based on design selection
+$("#colors-js-puns").hide();
 $("#design").change((e) => {	
 	if(e.target.value === "js puns") {	
+    	$("#colors-js-puns").show();
+    	$("#color option:first-child").text("Cornflower Blue (JS Puns shirt only)")
     	$("#color option[value='tomato'], option[value='steelblue'], option[value='dimgrey']").hide();
     	$("#color option[value='cornflowerblue'], option[value='darkslategrey'], option[value='gold']").show();
 
 	}
-	if(e.target.value === "heart js") {	
+	if(e.target.value === "heart js") {	 
+    	$("#colors-js-puns").show();
+    	$("#color option:first-child").text("Tomato (I ♥ JS shirt only)");
     	$("#color option[value='cornflowerblue'], option[value='darkslategrey'], option[value='gold']").hide();
     	$("#color option[value='tomato'], option[value='steelblue'], option[value='dimgrey']").show();
 	}
@@ -139,7 +144,7 @@ let enable = () => {
 };
 
 //Highlights border red if name left blank
-$("#name").keyup(() => {
+$("#name").change(() => {
 	if($("#name").val().length === 0 || $("#name").val().indexOf (' ') >= 0) {
 		$("#name").css("border", "red 2px solid");
 		name = false;
@@ -152,7 +157,7 @@ $("#name").keyup(() => {
 });
 
 //Used lenth of 6 because you typically need at least these many characters to write a valid email address (ex: 1@1.ca)
-$("#mail").keyup(() => {
+$("#mail").change(() => {
 	if(($("#mail").val().indexOf ('@')) <= 0 ||
 	  ($("#mail").val().indexOf ('.')) <= 0 ||
 	  ($("#mail").val().length < 6 )) {
@@ -196,22 +201,36 @@ $("#payment").change((e) => {
 	}
 });
 
+let errmsg = "<p style='color:red' id='errmsg'>Credit card field cannot be left blank</p>";
+$("#credit-card").after(errmsg);
+$("#cc-num").css("border", "red 2px solid");
 
-$("#cc-num").keyup(() => {
+$("#cc-num").change(() => {
 	let creditNum = $("#cc-num").val();
 	let isNumeric = ($.isNumeric(creditNum));
-	if (creditNum.length > 16 || creditNum.length < 13 || isNumeric === false) {
-		$("#cc-num").css("border", "red 2px solid");
-		ccnum = false;
-		enable();
-	} else {
-		$("#cc-num").css("border", "none")
-		ccnum = true;
-		enable();
+		if  (creditNum.length === 0) {
+			$("#errmsg").hide();
+			$("#cc-num").css("border", "red 2px solid");
+			ccnum = false;
+			let errmsg = "<p id='errmsg'>Credit card field cannot be left blank</p>"
+			$("#credit-card").after(errmsg)
+			enable();
+	}	else if (creditNum.length <= 16 && creditNum.length >= 13 && isNumeric === true){
+			$("#errmsg").hide();
+			$("#cc-num").css("border", "none")
+			ccnum = true;
+			enable();
+	} 	else {
+			$("#errmsg").hide();
+			$("#cc-num").css("border", "red 2px solid");
+			ccnum = false;
+			let errmsg = "<p style='color:red' id='errmsg'>Please enter a credit card number between 13-16 digits</p>"
+			$("#credit-card").after(errmsg)
+			enable();
 	}
 });
 
-$("#zip").keyup(() => {
+$("#zip").change(() => {
 	let zipNum = $("#zip").val();
 	let isNumeric = ($.isNumeric(zipNum));
 	if (zipNum.length !== 5 || isNumeric === false) {
@@ -225,7 +244,7 @@ $("#zip").keyup(() => {
 	}
 });
 
-$("#cvv").keyup(() => {
+$("#cvv").change(() => {
 	let cvvNum = $("#cvv").val();
 	let isNumeric = ($.isNumeric(cvvNum));
 	if (cvvNum.length !== 3 || isNumeric === false) {
